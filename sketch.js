@@ -3,6 +3,9 @@ var obstacle1, obstacle2, obstacle3;
 var roadImg, runnerImg, runnerImg2;
 var catcher, catcherImg, catcherImg2;
 
+var database;
+
+var form;
 
 var obstacleImg;
 var obstacleImg2;
@@ -13,10 +16,7 @@ var gameOverImg, cycleBell;
 
 var obs1G, obs2G, obs3G,obs4G;
 
-var START = 0;
-var END = 1;
-var PLAY = 2;
-var gameState = START;
+var gameState = 0;
 
 var distance = 0;
 var gameOver, restart;
@@ -54,9 +54,9 @@ function setup() {
 
   catcher = createSprite(50, 150);
   catcher.addAnimation("catcher1", catcherImg);
-  catcher.setCollider("rectangle", 0, 0, 50, 100);
+  catcher.setCollider("rectangle", 0, 0, 70, 110);
 
-  gameOver = createSprite(650, 150);
+  gameOver = createSprite(650, 120);
   gameOver.addImage(gameOverImg);
   gameOver.scale = 0.8;
   gameOver.visible = false;
@@ -70,26 +70,27 @@ function setup() {
 
 function draw() {
   background(0);
-
   drawSprites();
 
-
-  if(gameState === START){
-
-    textSize(20);
-    fill(255);
+  if(gameState === 0){
+    textSize(100)
+    fill("lightblue")
     textFont(font)
-    text("WELCOME TO CATCH THE BUNNY GAME",360,70);
-    text("COLLECT COINS TO GET AWAY FROM THE CATCHER",260,125);
-    text("HITTING ON OBSTACLE HELPS THE CATCHER GET NEAR YOU", 120, 280);
-    text("PRESS 'SPACE' TO START THE GAME", 270,350);
+    text("RUN",500,120)
+    textSize(20)
+    fill(255)
+    text("WELCOME TO .. ",260,60)
+    text("COLLECT COINS TO ESCAPE THE CATCHER",290,160)
+    text("HITTING OBSTACLES BRINGS YOU CLOSE TO THE CATCHER", 200, 260)
+    text("USE MOUSE TO MOVE THE CHARACTER", 300,300)
+    text("PRESS UP ARROW TO BEGIN THE GAME", 300,340)
 
-    if(keyDown("space")){
-      gameState = PLAY;
+    if(keyDown(38)){
+      gameState = 1
     }
   }
 
-  if (gameState === PLAY) {
+  if (gameState === 1) {
 
     textSize(20);
     fill(255);
@@ -128,19 +129,19 @@ function draw() {
     }
 
     if (obs1G.isTouching(runner)) {
-      catcher.x += 2;
+      catcher.x += 3;
     }
 
     if (obs2G.isTouching(runner)) {
-      catcher.x += 2;
+      catcher.x += 3;
     }
 
     if (obs3G.isTouching(runner)) {
-      catcher.x += 2;
+      catcher.x += 3;
     }
     if(obs4G.isTouching(runner)) {
-      runner.x += 3;
-      catcher.x -= 3;
+      runner.x += 12;
+      catcher.x -= 12;
       obs4G.destroyEach();
     }
 
@@ -161,16 +162,56 @@ function draw() {
     }
 
     if(catcher.isTouching(runner)){
-      gameState = END;
+      gameState = 2;
     }
 
-  } else if (gameState === END) {
-    gameOver.visible = true;
+    if(catcher.x < 0){
+      gameState = 3;
+    }
 
-    textSize(20);
+  } else if (gameState === 2) {
+
+    textSize(40);
     textFont(font);
+    fill("red");
+    text("YOU LOST !", 600,100);
+    textSize(20)
     fill(255);
-    text("Press Up Arrow to Restart the game!", 450, 250);
+    text("Press Up Arrow to Restart the game!", 370, 270);
+    text("SCORE : " + distance, 560,340)
+
+    road.velocityX = 0;
+    runner.velocityY = 0;
+    runner.addAnimation("runner1", runnerImg2);
+
+    catcher.velocityY = 0;
+    catcher.addAnimation("catcher1", catcherImg2);
+
+    obs1G.setVelocityXEach(0);
+    obs1G.setLifetimeEach(-1);
+
+    obs2G.setVelocityXEach(0);
+    obs2G.setLifetimeEach(-1);
+
+    obs3G.setVelocityXEach(0);
+    obs3G.setLifetimeEach(-1);
+
+    obs4G.setVelocityXEach(0);
+    obs4G.setLifetimeEach(-1);
+
+    if (keyDown("UP_ARROW")) {
+      reset();
+    }
+  } else if  (gameState === 3) {
+
+    textSize(40);
+    textFont(font);
+    fill("lightgreen");
+    text("YOU WON !", 600,100);
+    textSize(20)
+    fill(255)
+    text("Press Up Arrow to Restart the game!", 370, 270);
+    text("SCORE : " + distance, 560,340)
 
     road.velocityX = 0;
     runner.velocityY = 0;
@@ -234,7 +275,7 @@ function obst4() {
 }
 
 function reset() {
-  gameState = START;
+  gameState = 0;
   gameOver.visible = false;
   runner.addAnimation("runner", runnerImg2);
   catcher.addAnimation("catcher",catcherImg2);
