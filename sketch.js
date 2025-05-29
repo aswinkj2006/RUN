@@ -41,18 +41,18 @@ function preload() {
 
 function setup() {
 
-  createCanvas(1200, 400);
+  createCanvas(window.innerWidth, window.innerHeight);
 
-  road = createSprite(0,200);
+  road = createSprite(1200, 370);
   road.addImage(roadImg);
   road.x = width / 2;
   road.scale =0.5;
 
-  runner = createSprite(200, 150);
+  runner = createSprite(200, 250);
   runner.addAnimation("runner1", runnerImg);
   runner.setCollider("rectangle", 0, 0, 50, 100);
 
-  catcher = createSprite(50, 150);
+  catcher = createSprite(50, 250);
   catcher.addAnimation("catcher1", catcherImg);
   catcher.setCollider("rectangle", 0, 0, 70, 110);
 
@@ -76,14 +76,14 @@ function draw() {
     textSize(100)
     fill("lightblue")
     textFont(font)
-    text("RUN",500,120)
+    text("RUN",600,250)
     textSize(20)
     fill(255)
-    text("WELCOME TO .. ",260,60)
-    text("COLLECT COINS TO ESCAPE THE CATCHER",290,160)
-    text("HITTING OBSTACLES BRINGS YOU CLOSE TO THE CATCHER", 200, 260)
-    text("USE MOUSE TO MOVE THE CHARACTER", 300,300)
-    text("PRESS UP ARROW TO BEGIN THE GAME", 300,340)
+    text("WELCOME TO .. ",360,250)
+    text("COLLECT COINS TO ESCAPE THE CATCHER",310,300)
+    text("HITTING OBSTACLES BRINGS YOU CLOSE TO THE CATCHER", 200, 440)
+    text("USE MOUSE TO MOVE THE CHARACTER", 330,480)
+    text("( PRESS UP ARROW TO BEGIN THE GAME )", 300,520)
 
     if(keyDown(38)){
       gameState = 1
@@ -95,7 +95,7 @@ function draw() {
     textSize(20);
     fill(255);
     textFont(font)
-    text("Distance: " + distance, 830, 30);
+    text("Distance: " + distance, 1050, 30);
 
     distance = distance + Math.round(getFrameRate() / 50);
     road.velocityX = -(6 + 2 * distance / 150);
@@ -116,7 +116,9 @@ function draw() {
 
     var select_obstacle = Math.round(random(1, 4));
 
-    if (World.frameCount % 150 == 0) {
+    let spawnInterval = Math.max(40, 150 - Math.floor(distance / 10));
+
+    if (World.frameCount % spawnInterval == 0) {
       if (select_obstacle == 1) {
         obst1();
       } else if (select_obstacle == 2) {
